@@ -25,56 +25,59 @@
 
 ThreadsManager Threads; // Global object definition
 
-namespace { extern "C" {
+namespace
+{
+extern "C" {
 
- // start_routine() is the C function which is called when a new thread
- // is launched. It simply calls idle_loop() of the supplied thread.
- // There are two versions of this function; one for POSIX threads and
- // one for Windows threads.
+// start_routine() is the C function which is called when a new thread
+// is launched. It simply calls idle_loop() of the supplied thread.
+// There are two versions of this function; one for POSIX threads and
+// one for Windows threads.
 
 #if defined(_MSC_VER) || defined(_WIN32)
 
-	DWORD WINAPI start_routine(LPVOID thread) {
+DWORD WINAPI start_routine(LPVOID thread)
+{
 
-		((Thread*)thread)->idle_loop(NULL);
-		return 0;
-	}
+	((Thread *)thread)->idle_loop(NULL);
+	return 0;
+}
 
 #else
 
-	void* start_routine(void* thread) {
+void *start_routine(void *thread)
+{
 
-		((Thread*)thread)->idle_loop(NULL);
-		return NULL;
-	}
+	((Thread *)thread)->idle_loop(NULL);
+	return NULL;
+}
 
 #endif
-
-} }
-
+}
+}
 
 // wake_up() wakes up the thread, normally at the beginning of the search or,
 // if "sleeping threads" is used, when there is some work to do.
 
-void Thread::wake_up() {
+void Thread::wake_up()
+{
 
 	lock_grab(&sleepLock);
 	cond_signal(&sleepCond);
 	lock_release(&sleepLock);
 }
 
-
 // cutoff_occurred() checks whether a beta cutoff has occurred in the current
 // active split point, or in some ancestor of the split point.
 
-bool Thread::cutoff_occurred() const {
+bool Thread::cutoff_occurred() const
+{
 
-	for (SplitPoint* sp = splitPoint; sp; sp = sp->parent)
+	for (SplitPoint *sp = splitPoint; sp; sp = sp->parent)
 		if (sp->is_betaCutoff)
 			return true;
 	return false;
 }
-
 
 // is_available_to() checks whether the thread is available to help the thread with
 // threadID "master" at a split point. An obvious requirement is that thread must be
@@ -83,7 +86,8 @@ bool Thread::cutoff_occurred() const {
 // threads which are busy searching the split point at the top of "slave"'s split
 // point stack (the "helpful master concept" in YBWC terminology).
 
-bool Thread::is_available_to(int master) const {
+bool Thread::is_available_to(int master) const
+{
 
 	if (is_searching)
 		return false;
@@ -94,40 +98,38 @@ bool Thread::is_available_to(int master) const {
 
 	// No active split points means that the thread is available as a slave for any
 	// other thread otherwise apply the "helpful master" concept if possible.
-	if (   !localActiveSplitPoints
-	    || splitPoints[localActiveSplitPoints - 1].is_slave[master])
+	if (!localActiveSplitPoints || splitPoints[localActiveSplitPoints - 1].is_slave[master])
 		return true;
 
 	return false;
 }
 
-
 // read_uci_options() updates number of active threads and other internal
 // parameters according to the UCI options values. It is called before
 // to start a new search.
 
-void ThreadsManager::read_uci_options() {
+void ThreadsManager::read_uci_options()
+{
 
 	maxThreadsPerSplitPoint = Options["Maximum Number of Threads per Split Point"].value<int>();
-	minimumSplitDepth       = Options["Minimum Split Depth"].value<int>() * ONE_PLY;
-	useSleepingThreads      = Options["Use Sleeping Threads"].value<bool>();
+	minimumSplitDepth = Options["Minimum Split Depth"].value<int>() * ONE_PLY;
+	useSleepingThreads = Options["Use Sleeping Threads"].value<bool>();
 
 	set_size(Options["Threads"].value<int>());
 }
 
-
 // set_size() changes the number of active threads and raises do_sleep flag for
 // all the unused threads that will go immediately to sleep.
 
-void ThreadsManager::set_size(int cnt) {
+void ThreadsManager::set_size(int cnt)
+{
 
 	assert(cnt > 0 && cnt <= MAX_THREADS);
 
 	activeThreads = cnt;
 
 	for (int i = 0; i < MAX_THREADS; i++)
-		if (i < activeThreads)
-		{
+		if (i < activeThreads) {
 			// Dynamically allocate pawn and material hash tables according to the
 			// number of active threads. This avoids preallocating memory for all
 			// possible threads if only few are used as, for instance, on mobile
@@ -139,23 +141,21 @@ void ThreadsManager::set_size(int cnt) {
 #endif
 
 			threads[i].do_sleep = false;
-		}
-		else
+		} else
 			threads[i].do_sleep = true;
 }
-
 
 // init() is called during startup. Initializes locks and condition variables
 // and launches all threads sending them immediately to sleep.
 
-void ThreadsManager::init() {
+void ThreadsManager::init()
+{
 
 	// Initialize threads lock, used when allocating slaves during splitting
 	lock_init(&threadsLock);
 
 	// Initialize sleep and split point locks
-	for (int i = 0; i < MAX_THREADS; i++)
-	{
+	for (int i = 0; i < MAX_THREADS; i++) {
 		lock_init(&threads[i].sleepLock);
 		cond_init(&threads[i].sleepCond);
 
@@ -170,58 +170,53 @@ void ThreadsManager::init() {
 
 	// Create and launch all the threads but the main that is already running,
 	// threads will go immediately to sleep.
-	for (int i = 1; i < MAX_THREADS; i++)
-	{
+	for (int i = 1; i < MAX_THREADS; i++) {
 		threads[i].is_searching = false;
 		threads[i].threadID = i;
 
-#if defined(_MSC_VER) || defined(_WIN32) 
+#if defined(_MSC_VER)
 #if defined(NANOHA)
-		// ‚Æ‚è‚ ‚¦‚¸AƒXƒ^ƒbƒNƒTƒCƒY32MB
-		threads[i].handle = CreateThread(NULL, 1024*1024*32, start_routine, (LPVOID)&threads[i], 0, NULL);
+		// ï¿½Æ‚è‚ ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½Xï¿½^ï¿½bï¿½Nï¿½Tï¿½Cï¿½Y32MB
+		threads[i].handle = CreateThread(NULL, 1024 * 1024 * 32, start_routine, (LPVOID)&threads[i], 0, NULL);
 #else
 		threads[i].handle = CreateThread(NULL, 0, start_routine, (LPVOID)&threads[i], 0, NULL);
 #endif
 		bool ok = (threads[i].handle != NULL);
 #else
 #if defined(NANOHA)
-		pthread_attr_t attr  ;
+		pthread_attr_t attr;
 		pthread_attr_init(&attr);
-		pthread_attr_setstacksize(&attr,1024*1024*32);
-		bool ok = (pthread_create(&threads[i].handle, &attr, start_routine, (void*)&threads[i]) == 0);
+		pthread_attr_setstacksize(&attr, 1024 * 1024 * 32);
+		bool ok = (pthread_create(&threads[i].handle, &attr, (void *(*)(void *))start_routine, (void *)&threads[i]) == 0);
 #else
-		bool ok = (pthread_create(&threads[i].handle, NULL, start_routine, (void*)&threads[i]) == 0);
+		bool ok = (pthread_create(&threads[i].handle, NULL, start_routine, (void *)&threads[i]) == 0);
 #endif
 #endif
-		if (!ok)
-		{
+		if (!ok) {
 			std::cerr << "Failed to create thread number " << i << std::endl;
 			::exit(EXIT_FAILURE);
 		}
 	}
 }
 
-
 // exit() is called to cleanly terminate the threads when the program finishes
 
-void ThreadsManager::exit() {
+void ThreadsManager::exit()
+{
 
 	// Wake up all the slave threads at once. This is faster than "wake and wait"
 	// for each thread and avoids a rare crash once every 10K games under Linux.
-	for (int i = 1; i < MAX_THREADS; i++)
-	{
+	for (int i = 1; i < MAX_THREADS; i++) {
 		threads[i].do_terminate = true;
 		threads[i].wake_up();
 	}
 
-	for (int i = 0; i < MAX_THREADS; i++)
-	{
-		if (i != 0)
-		{
+	for (int i = 0; i < MAX_THREADS; i++) {
+		if (i != 0) {
 			// Wait for slave termination
 #if defined(_MSC_VER)
-			// ‘Ò‚¿ŽžŠÔ‚ð’Ç‰Á‚µ‚È‚¢‚ÆAƒXƒŒƒbƒh‚ª“Ë”@I‚í‚Á‚Ä‚µ‚Ü‚¤‚½‚ß
-			// ƒƒbƒNƒIƒuƒWƒFƒNƒgŠÖŒW‚ÌƒGƒ‰[‚ª”­¶‚µ‚Ü‚·B
+			// ï¿½Ò‚ï¿½ï¿½ï¿½ï¿½Ô‚ï¿½Ç‰ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½ÆAï¿½Xï¿½ï¿½ï¿½bï¿½hï¿½ï¿½ï¿½Ë”@ï¿½Iï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½ï¿½ï¿½
+			// ï¿½ï¿½ï¿½bï¿½Nï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ÖŒWï¿½ÌƒGï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
 #if defined(NANOHA)
 			WaitForSingleObject(threads[i].handle, 1000);
 #else
@@ -244,11 +239,11 @@ void ThreadsManager::exit() {
 	lock_destroy(&threadsLock);
 }
 
-
 // available_slave_exists() tries to find an idle thread which is available as
 // a slave for the thread with threadID "master".
 
-bool ThreadsManager::available_slave_exists(int master) const {
+bool ThreadsManager::available_slave_exists(int master) const
+{
 
 	assert(master >= 0 && master < activeThreads);
 
@@ -258,7 +253,6 @@ bool ThreadsManager::available_slave_exists(int master) const {
 
 	return false;
 }
-
 
 // split() does the actual work of distributing the work at a node between
 // several available threads. If it does not succeed in splitting the
@@ -270,9 +264,10 @@ bool ThreadsManager::available_slave_exists(int master) const {
 // call search().When all threads have returned from search() then split() returns.
 
 template <bool Fake>
-Value ThreadsManager::split(Position& pos, SearchStack* ss, Value alpha, Value beta,
-	                          Value bestValue, Depth depth, Move threatMove,
-	                          int moveCount, MovePicker* mp, int nodeType) {
+Value ThreadsManager::split(Position &pos, SearchStack *ss, Value alpha, Value beta,
+                            Value bestValue, Depth depth, Move threatMove,
+                            int moveCount, MovePicker *mp, int nodeType)
+{
 	assert(pos.is_ok());
 	assert(bestValue >= -VALUE_INFINITE);
 	assert(bestValue <= alpha);
@@ -283,14 +278,14 @@ Value ThreadsManager::split(Position& pos, SearchStack* ss, Value alpha, Value b
 	assert(activeThreads > 1);
 
 	int i, master = pos.thread();
-	Thread& masterThread = threads[master];
+	Thread &masterThread = threads[master];
 
 	// If we already have too many active split points, don't split
 	if (masterThread.activeSplitPoints >= MAX_ACTIVE_SPLIT_POINTS)
 		return bestValue;
 
 	// Pick the next available split point object from the split point stack
-	SplitPoint* sp = masterThread.splitPoints + masterThread.activeSplitPoints;
+	SplitPoint *sp = masterThread.splitPoints + masterThread.activeSplitPoints;
 
 	// Initialize the split point object
 	sp->parent = masterThread.splitPoint;
@@ -321,8 +316,7 @@ Value ThreadsManager::split(Position& pos, SearchStack* ss, Value alpha, Value b
 	lock_grab(&threadsLock);
 
 	for (i = 0; !Fake && i < activeThreads && workersCnt < maxThreadsPerSplitPoint; i++)
-		if (i != master && threads[i].is_available_to(master))
-		{
+		if (i != master && threads[i].is_available_to(master)) {
 			workersCnt++;
 			sp->is_slave[i] = true;
 			threads[i].splitPoint = sp;
@@ -371,5 +365,5 @@ Value ThreadsManager::split(Position& pos, SearchStack* ss, Value alpha, Value b
 }
 
 // Explicit template instantiations
-template Value ThreadsManager::split<false>(Position&, SearchStack*, Value, Value, Value, Depth, Move, int, MovePicker*, int);
-template Value ThreadsManager::split<true>(Position&, SearchStack*, Value, Value, Value, Depth, Move, int, MovePicker*, int);
+template Value ThreadsManager::split<false>(Position &, SearchStack *, Value, Value, Value, Depth, Move, int, MovePicker *, int);
+template Value ThreadsManager::split<true>(Position &, SearchStack *, Value, Value, Value, Depth, Move, int, MovePicker *, int);

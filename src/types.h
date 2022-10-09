@@ -27,25 +27,24 @@
 #include <cstdio>
 #endif
 
-
 #if defined(_MSC_VER) || defined(_WIN32)
 
 // Disable some silly and noisy warning from MSVC compiler
-#pragma warning(disable: 4800) // Forcing value to bool 'true' or 'false'
-#pragma warning(disable: 4127) // Conditional expression is constant
-#pragma warning(disable: 4146) // Unary minus operator applied to unsigned type
+#pragma warning(disable : 4800) // Forcing value to bool 'true' or 'false'
+#pragma warning(disable : 4127) // Conditional expression is constant
+#pragma warning(disable : 4146) // Unary minus operator applied to unsigned type
 
 // MSVC does not support <inttypes.h>
-typedef   signed __int8    int8_t;
-typedef unsigned __int8   uint8_t;
-typedef   signed __int16  int16_t;
+typedef signed __int8 int8_t;
+typedef unsigned __int8 uint8_t;
+typedef signed __int16 int16_t;
 typedef unsigned __int16 uint16_t;
-typedef   signed __int32  int32_t;
+typedef signed __int32 int32_t;
 typedef unsigned __int32 uint32_t;
-typedef   signed __int64  int64_t;
+typedef signed __int64 int64_t;
 typedef unsigned __int64 uint64_t;
 
-#define snprintf	_snprintf
+#define snprintf _snprintf
 
 #else
 
@@ -54,15 +53,15 @@ typedef unsigned __int64 uint64_t;
 #endif
 
 #ifndef UINT64_C
-#define UINT64_C(x)	(x ## llu)
+#define UINT64_C(x) (x##llu)
 #endif
 
 #ifndef PRI64
-#define PRI64	"%lld"
+#define PRI64 "%lld"
 #endif
 
 #ifndef PRIx64
-#define PRIx64	"%llx"
+#define PRIx64 "%llx"
 #endif
 
 #define Min(x, y) (((x) < (y)) ? (x) : (y))
@@ -110,7 +109,7 @@ typedef unsigned __int64 uint64_t;
 #if defined(_MSC_VER) || defined(_WIN32) || defined(__INTEL_COMPILER)
 #define CACHE_LINE_ALIGNMENT __declspec(align(64))
 #else
-#define CACHE_LINE_ALIGNMENT  __attribute__ ((aligned(64)))
+#define CACHE_LINE_ALIGNMENT __attribute__((aligned(64)))
 #endif
 
 // Define a __cpuid() function for gcc compilers, for Intel and MSVC
@@ -122,15 +121,16 @@ typedef unsigned __int64 uint64_t;
 #elif defined(__GNUC__) && (defined(__i386__) || defined(__x86_64__))
 inline void __cpuid(int CPUInfo[4], int InfoType)
 {
-	int* eax = CPUInfo + 0;
-	int* ebx = CPUInfo + 1;
-	int* ecx = CPUInfo + 2;
-	int* edx = CPUInfo + 3;
+	int *eax = CPUInfo + 0;
+	int *ebx = CPUInfo + 1;
+	int *ecx = CPUInfo + 2;
+	int *edx = CPUInfo + 3;
 
 	*eax = InfoType;
 	*ecx = 0;
-	__asm__("cpuid" : "=a" (*eax), "=b" (*ebx), "=c" (*ecx), "=d" (*edx)
-	                : "0" (*eax), "2" (*ecx));
+	__asm__("cpuid"
+	        : "=a"(*eax), "=b"(*ebx), "=c"(*ecx), "=d"(*edx)
+	        : "0"(*eax), "2"(*ecx));
 }
 #else
 inline void __cpuid(int CPUInfo[4], int)
@@ -141,15 +141,16 @@ inline void __cpuid(int CPUInfo[4], int)
 
 // Define FORCE_INLINE macro to force inlining overriding compiler choice
 #if defined(_MSC_VER) || defined(_WIN32)
-#define FORCE_INLINE  __forceinline
+#define FORCE_INLINE __forceinline
 #elif defined(__GNUC__)
-#define FORCE_INLINE  inline __attribute__((always_inline))
+#define FORCE_INLINE inline __attribute__((always_inline))
 #else
-#define FORCE_INLINE  inline
+#define FORCE_INLINE inline
 #endif
 
 /// cpu_has_popcnt() detects support for popcnt instruction at runtime
-inline bool cpu_has_popcnt() {
+inline bool cpu_has_popcnt()
+{
 
 	int CPUInfo[4] = {-1};
 	__cpuid(CPUInfo, 0x00000001);
@@ -164,7 +165,6 @@ const bool CpuHasPOPCNT = cpu_has_popcnt();
 #else
 const bool CpuHasPOPCNT = false;
 #endif
-
 
 /// CpuIs64Bit is a global constant initialized at compile time that
 /// is set to true if CPU on which application runs is a 64 bits.
@@ -185,26 +185,26 @@ const int PLY_MAX = 100;
 #if !defined(NANOHA)
 const int PLY_MAX_PLUS_2 = PLY_MAX + 2;
 #else
-const int PLY_MAX_PLUS_2 = PLY_MAX + 4;		// –¼‘O‚Æˆê’v‚µ‚È‚¢‚ªA+4‚É‚·‚é(+2‚¾‚Æ”z—ñƒI[ƒo[‚·‚é)B
-                                       		// ‚ ‚Æ‚ÌVersion‚Å‚Í‘O‚É2AŒã‚ë‚É2ƒTƒCƒY‚ğŠg’£‚µ‚Ä‚¢‚é‚Ì‚Å‘Ã“–‚Èˆ’u‚©‚ÆB
+const int PLY_MAX_PLUS_2 = PLY_MAX + 4; // ï¿½ï¿½ï¿½Oï¿½Æˆï¿½vï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½A+4ï¿½É‚ï¿½ï¿½ï¿½(+2ï¿½ï¿½ï¿½Æ”zï¿½ï¿½Iï¿½[ï¿½oï¿½[ï¿½ï¿½ï¿½ï¿½)ï¿½B
+                                        // ï¿½ï¿½ï¿½Æ‚ï¿½Versionï¿½Å‚Í‘Oï¿½ï¿½2ï¿½Aï¿½ï¿½ï¿½ï¿½2ï¿½Tï¿½Cï¿½Yï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Ì‚Å‘Ã“ï¿½ï¿½Èï¿½ï¿½uï¿½ï¿½ï¿½ÆB
 #endif
 
 enum ValueType {
-	VALUE_TYPE_NONE  = 0,
+	VALUE_TYPE_NONE = 0,
 	VALUE_TYPE_UPPER = 1,
 	VALUE_TYPE_LOWER = 2,
 	VALUE_TYPE_EXACT = VALUE_TYPE_UPPER | VALUE_TYPE_LOWER
 };
 
 enum Value {
-	VALUE_ZERO      = 0,
-	VALUE_DRAW      = 0,
+	VALUE_ZERO = 0,
+	VALUE_DRAW = 0,
 	VALUE_KNOWN_WIN = 15000,
-	VALUE_MATE      = 30000,
-	VALUE_INFINITE  = 30001,
-	VALUE_NONE      = 30002,
+	VALUE_MATE = 30000,
+	VALUE_INFINITE = 30001,
+	VALUE_NONE = 30002,
 
-	VALUE_MATE_IN_PLY_MAX  =  VALUE_MATE - PLY_MAX,
+	VALUE_MATE_IN_PLY_MAX = VALUE_MATE - PLY_MAX,
 	VALUE_MATED_IN_PLY_MAX = -VALUE_MATE + PLY_MAX,
 
 	VALUE_ENSURE_INTEGER_SIZE_P = INT_MAX,
@@ -213,12 +213,13 @@ enum Value {
 
 #if defined(NANOHA)
 
-enum Player {SENTE = 0, GOTE = 0x10};
+enum Player { SENTE = 0,
+	          GOTE = 0x10 };
 
-// ˆÈ‰º‚Ì”»’è‚Í x ‚ª‹ó(EMP)‚â•Ç(WALL)‚Å‚È‚¢‚±‚Æ‚ğ—v‹‚·‚é(‹ó‚â•Ç‚Ìê‡‚Í³‚µ‚­”»’è‚Å‚«‚È‚¢)
-#define IsGote(x)			((x) & GOTE)
-#define IsSente(x)			(!IsGote(x))
-#define IsNotOwn(x,SorG)	(((x) & GOTE) != SorG)
+// ï¿½È‰ï¿½ï¿½Ì”ï¿½ï¿½ï¿½ï¿½ x ï¿½ï¿½ï¿½ï¿½(EMP)ï¿½ï¿½ï¿½(WALL)ï¿½Å‚È‚ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½Ç‚Ìê‡ï¿½Íï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å‚ï¿½ï¿½È‚ï¿½)
+#define IsGote(x) ((x)&GOTE)
+#define IsSente(x) (!IsGote(x))
+#define IsNotOwn(x, SorG) (((x)&GOTE) != SorG)
 
 enum PieceType {
 	PIECE_TYPE_NONE = 0,
@@ -244,7 +245,7 @@ enum PieceType {
 
 enum Piece {
 	EMP = 0x00,
-	WALL= 0x80,
+	WALL = 0x80,
 
 	SFU = FU | SENTE,
 	SKY = KY | SENTE,
@@ -279,192 +280,225 @@ enum Piece {
 };
 
 enum Color {
-	BLACK, WHITE, COLOR_NONE
+	BLACK,
+	WHITE,
+	COLOR_NONE
 };
 
-typedef uint8_t PieceKind_t;       // ‹îí—Ş
-typedef uint8_t PieceNumber_t;     // ‹î”Ô†
-#define MAX_PIECENUMBER	40
+typedef uint8_t PieceKind_t;   // ï¿½ï¿½ï¿½ï¿½
+typedef uint8_t PieceNumber_t; // ï¿½ï¿½Ôï¿½
+#define MAX_PIECENUMBER 40
 
-// —˜‚«‚Ì’è‹`
+// ï¿½ï¿½ï¿½ï¿½ï¿½Ì’ï¿½`
 typedef uint32_t effect_t;
 
-#define EFFECT_SHORT_MASK		0x00000FFF
-#define EFFECT_LONG_MASK		0x00FF0000
-#define EFFECT_LONG_SHIFT		16
-#define EXIST_LONG_EFFECT(x)	((x) & EFFECT_LONG_MASK)
-#define EXIST_EFFECT(x)			(x)
+#define EFFECT_SHORT_MASK 0x00000FFF
+#define EFFECT_LONG_MASK 0x00FF0000
+#define EFFECT_LONG_SHIFT 16
+#define EXIST_LONG_EFFECT(x) ((x)&EFFECT_LONG_MASK)
+#define EXIST_EFFECT(x) (x)
 
-#define EFFECT_UP		(1u <<  0)
-#define EFFECT_DOWN		(1u <<  1)
-#define EFFECT_RIGHT	(1u <<  2)
-#define EFFECT_LEFT		(1u <<  3)
-#define EFFECT_UR		(1u <<  4)
-#define EFFECT_UL		(1u <<  5)
-#define EFFECT_DR		(1u <<  6)
-#define EFFECT_DL		(1u <<  7)
-#define EFFECT_KEUR		(1u <<  8)
-#define EFFECT_KEUL		(1u <<  9)
-#define EFFECT_KEDR		(1u << 10)
-#define EFFECT_KEDL		(1u << 11)
+#define EFFECT_UP (1u << 0)
+#define EFFECT_DOWN (1u << 1)
+#define EFFECT_RIGHT (1u << 2)
+#define EFFECT_LEFT (1u << 3)
+#define EFFECT_UR (1u << 4)
+#define EFFECT_UL (1u << 5)
+#define EFFECT_DR (1u << 6)
+#define EFFECT_DL (1u << 7)
+#define EFFECT_KEUR (1u << 8)
+#define EFFECT_KEUL (1u << 9)
+#define EFFECT_KEDR (1u << 10)
+#define EFFECT_KEDL (1u << 11)
 
-#define EFFECT_KING_S(pos)	relate_pos(pos,kingS)
-#define EFFECT_KING_G(pos)	relate_pos(pos,kingG)
+#define EFFECT_KING_S(pos) relate_pos(pos, kingS)
+#define EFFECT_KING_G(pos) relate_pos(pos, kingG)
 
-// •ûŒü‚Ì’è‹`
-	//
-	//  DIR_KEUL           DIR_KEUR
-	//  DIR_UL    DIR_UP   DIR_UR
-	//  DIR_LEFT    œ     DIR_RIGHT
-	//  DIR_DL   DIR_DOWN  DIR_DR
-	//  DIR_KEDL           DIR_KEDR
-	//
+// ï¿½ï¿½ï¿½ï¿½ï¿½Ì’ï¿½`
+//
+//  DIR_KEUL           DIR_KEUR
+//  DIR_UL    DIR_UP   DIR_UR
+//  DIR_LEFT    ï¿½ï¿½     DIR_RIGHT
+//  DIR_DL   DIR_DOWN  DIR_DR
+//  DIR_KEDL           DIR_KEDR
+//
 
-#define DIR_UP		(-1)
-#define DIR_DOWN	(+1)
-#define DIR_RIGHT	(-16)
-#define DIR_LEFT	(+16)
-#define DIR_UR		(DIR_UP   + DIR_RIGHT)
-#define DIR_UL		(DIR_UP   + DIR_LEFT)
-#define DIR_DR		(DIR_DOWN + DIR_RIGHT)
-#define DIR_DL		(DIR_DOWN + DIR_LEFT)
-#define DIR_KEUR	(DIR_UP   + DIR_UP   + DIR_RIGHT)
-#define DIR_KEUL	(DIR_UP   + DIR_UP   + DIR_LEFT)
-#define DIR_KEDR	(DIR_DOWN + DIR_DOWN + DIR_RIGHT)
-#define DIR_KEDL	(DIR_DOWN + DIR_DOWN + DIR_LEFT)
+#define DIR_UP (-1)
+#define DIR_DOWN (+1)
+#define DIR_RIGHT (-16)
+#define DIR_LEFT (+16)
+#define DIR_UR (DIR_UP + DIR_RIGHT)
+#define DIR_UL (DIR_UP + DIR_LEFT)
+#define DIR_DR (DIR_DOWN + DIR_RIGHT)
+#define DIR_DL (DIR_DOWN + DIR_LEFT)
+#define DIR_KEUR (DIR_UP + DIR_UP + DIR_RIGHT)
+#define DIR_KEUL (DIR_UP + DIR_UP + DIR_LEFT)
+#define DIR_KEDR (DIR_DOWN + DIR_DOWN + DIR_RIGHT)
+#define DIR_KEDL (DIR_DOWN + DIR_DOWN + DIR_LEFT)
 
-#define DIR00		DIR_UP
-#define DIR01		DIR_DOWN
-#define DIR02		DIR_RIGHT
-#define DIR03		DIR_LEFT
-#define DIR04		DIR_UR
-#define DIR05		DIR_UL
-#define DIR06		DIR_DR
-#define DIR07		DIR_DL
-#define DIR08		DIR_KEUR
-#define DIR09		DIR_KEUL
-#define DIR10		DIR_KEDR
-#define DIR11		DIR_KEDL
-#define KIKI00		EFFECT_UP
-#define KIKI01		EFFECT_DOWN
-#define KIKI02		EFFECT_RIGHT
-#define KIKI03		EFFECT_LEFT
-#define KIKI04		EFFECT_UR
-#define KIKI05		EFFECT_UL
-#define KIKI06		EFFECT_DR
-#define KIKI07		EFFECT_DL
-#define KIKI08		EFFECT_KEUR
-#define KIKI09		EFFECT_KEUL
-#define KIKI10		EFFECT_KEDR
-#define KIKI11		EFFECT_KEDL
+#define DIR00 DIR_UP
+#define DIR01 DIR_DOWN
+#define DIR02 DIR_RIGHT
+#define DIR03 DIR_LEFT
+#define DIR04 DIR_UR
+#define DIR05 DIR_UL
+#define DIR06 DIR_DR
+#define DIR07 DIR_DL
+#define DIR08 DIR_KEUR
+#define DIR09 DIR_KEUL
+#define DIR10 DIR_KEDR
+#define DIR11 DIR_KEDL
+#define KIKI00 EFFECT_UP
+#define KIKI01 EFFECT_DOWN
+#define KIKI02 EFFECT_RIGHT
+#define KIKI03 EFFECT_LEFT
+#define KIKI04 EFFECT_UR
+#define KIKI05 EFFECT_UL
+#define KIKI06 EFFECT_DR
+#define KIKI07 EFFECT_DL
+#define KIKI08 EFFECT_KEUR
+#define KIKI09 EFFECT_KEUL
+#define KIKI10 EFFECT_KEDR
+#define KIKI11 EFFECT_KEDL
 
-// ¬‚ê‚é‚©‚Ç‚¤‚©H
-template<Color color>
+// ï¿½ï¿½ï¿½ï¿½é‚©ï¿½Ç‚ï¿½ï¿½ï¿½ï¿½H
+template <Color color>
 inline bool can_promotion(const int pos)
 {
 	return (color == BLACK) ? ((pos & 0x0F) <= 3) : ((pos & 0x0F) >= 7);
 }
 
-// s‚«‚Ç‚±‚ë‚Ì‚È‚¢‹î‚ğ‘Å‚Á‚Ä‚Í‚¢‚¯‚È‚¢
-//   •à‚ÆFæè‚Í1’i–ÚAŒãè‚Í9’i–Ú‚ªNG
-template<Color color>
+// ï¿½sï¿½ï¿½ï¿½Ç‚ï¿½ï¿½ï¿½Ì‚È‚ï¿½ï¿½ï¿½ï¿½Å‚ï¿½ï¿½Ä‚Í‚ï¿½ï¿½ï¿½ï¿½È‚ï¿½
+//   ï¿½ï¿½ï¿½Æï¿½ï¿½Fï¿½ï¿½ï¿½ï¿½1ï¿½iï¿½ÚAï¿½ï¿½ï¿½ï¿½9ï¿½iï¿½Ú‚ï¿½NG
+template <Color color>
 inline bool is_drop_pawn(const int pos)
 {
-	if (color == BLACK && (pos & 0x0F) < 2) return false;
-	if (color == WHITE && (pos & 0x0F) > 8) return false;
+	if (color == BLACK && (pos & 0x0F) < 2)
+		return false;
+	if (color == WHITE && (pos & 0x0F) > 8)
+		return false;
 	return true;
 }
 
-//   ŒjFæè‚Í1A2’i–ÚAŒãè‚Í8A9’i–Ú‚ªNG
-template<Color color>
+//   ï¿½jï¿½Fï¿½ï¿½ï¿½ï¿½1ï¿½A2ï¿½iï¿½ÚAï¿½ï¿½ï¿½ï¿½8ï¿½A9ï¿½iï¿½Ú‚ï¿½NG
+template <Color color>
 inline bool is_drop_knight(const int pos)
 {
-	if (color == BLACK && (pos & 0x0F) < 3) return false;
-	if (color == WHITE && (pos & 0x0F) > 7) return false;
+	if (color == BLACK && (pos & 0x0F) < 3)
+		return false;
+	if (color == WHITE && (pos & 0x0F) > 7)
+		return false;
 	return true;
 }
 
-// ‹î
+// ï¿½ï¿½ï¿½ï¿½
 struct Hand {
 	uint32_t h;
-	static const uint32_t tbl[HI+1];
+	static const uint32_t tbl[HI + 1];
 /*
-	xxxxxxxx xxxxxxxx xxxxxxxx xxx11111  •à
-	xxxxxxxx xxxxxxxx xxxxx111 xxxxxxxx  
-	xxxxxxxx xxxxxxxx x111xxxx xxxxxxxx  Œj
-	xxxxxxxx xxxxx111 xxxxxxxx xxxxxxxx  ‹â
-	xxxxxxxx x111xxxx xxxxxxxx xxxxxxxx  ‹à
-	xxxxxx11 xxxxxxxx xxxxxxxx xxxxxxxx  Šp
-	xx11xxxx xxxxxxxx xxxxxxxx xxxxxxxx  ”ò
-	‚±‚Ì‚æ‚¤‚É’è‹`‚·‚é‚Æ16i”‚Å•\¦‚µ‚½‚Æ‚«‚É‚Ç‚Ì‹î‚ğ‰½–‡‚Á‚Ä‚¢‚é‚©‚í‚©‚è‚â‚·‚¢B
-	—áj”òA‹àAŒj‚ğŠe1–‡A•à‚ğ8–‡‚Á‚Ä‚¢‚é‚Æ‚«‚Í 0x10101008 ‚Æ‚È‚é
+	xxxxxxxx xxxxxxxx xxxxxxxx xxx11111  ï¿½ï¿½
+	xxxxxxxx xxxxxxxx xxxxx111 xxxxxxxx  ï¿½ï¿½
+	xxxxxxxx xxxxxxxx x111xxxx xxxxxxxx  ï¿½j
+	xxxxxxxx xxxxx111 xxxxxxxx xxxxxxxx  ï¿½ï¿½
+	xxxxxxxx x111xxxx xxxxxxxx xxxxxxxx  ï¿½ï¿½
+	xxxxxx11 xxxxxxxx xxxxxxxx xxxxxxxx  ï¿½p
+	xx11xxxx xxxxxxxx xxxxxxxx xxxxxxxx  ï¿½ï¿½
+	ï¿½ï¿½ï¿½Ì‚æ‚¤ï¿½É’ï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½16ï¿½iï¿½ï¿½ï¿½Å•\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½É‚Ç‚Ì‹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½é‚©ï¿½í‚©ï¿½ï¿½â‚·ï¿½ï¿½ï¿½B
+	ï¿½ï¿½jï¿½ï¿½Aï¿½ï¿½ï¿½Aï¿½jï¿½ï¿½ï¿½e1ï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½8ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Æ‚ï¿½ï¿½ï¿½ 0x10101008 ï¿½Æ‚È‚ï¿½
  */
-#define HAND_FU_SHIFT	 0
-#define HAND_KY_SHIFT	 8
-#define HAND_KE_SHIFT	12
-#define HAND_GI_SHIFT	16
-#define HAND_KI_SHIFT	20
-#define HAND_KA_SHIFT	24
-#define HAND_HI_SHIFT	28
+#define HAND_FU_SHIFT 0
+#define HAND_KY_SHIFT 8
+#define HAND_KE_SHIFT 12
+#define HAND_GI_SHIFT 16
+#define HAND_KI_SHIFT 20
+#define HAND_KA_SHIFT 24
+#define HAND_HI_SHIFT 28
 
-#define HAND_FU_MASK	(0x1Fu << HAND_FU_SHIFT)
-#define HAND_KY_MASK	(0x07u << HAND_KY_SHIFT)
-#define HAND_KE_MASK	(0x07u << HAND_KE_SHIFT)
-#define HAND_GI_MASK	(0x07u << HAND_GI_SHIFT)
-#define HAND_KI_MASK	(0x07u << HAND_KI_SHIFT)
-#define HAND_KA_MASK	(0x03u << HAND_KA_SHIFT)
-#define HAND_HI_MASK	(0x03u << HAND_HI_SHIFT)
-#define HAND_FU_INC		(0x01u << HAND_FU_SHIFT)
-#define HAND_KY_INC		(0x01u << HAND_KY_SHIFT)
-#define HAND_KE_INC		(0x01u << HAND_KE_SHIFT)
-#define HAND_GI_INC		(0x01u << HAND_GI_SHIFT)
-#define HAND_KI_INC		(0x01u << HAND_KI_SHIFT)
-#define HAND_KA_INC		(0x01u << HAND_KA_SHIFT)
-#define HAND_HI_INC		(0x01u << HAND_HI_SHIFT)
-#define HAND_DOM_MASK	(~(HAND_FU_MASK | HAND_KY_MASK | HAND_KE_MASK | HAND_GI_MASK | HAND_KI_MASK | HAND_KA_MASK | HAND_HI_MASK))
-#define IS_DOM_HAND(h1, h2)	((((h1) - (h2)) & HAND_DOM_MASK) == 0)
-	// Še‹î‚Ì–‡”‚ğæ“¾‚·‚é
-	inline uint32_t getFU() const {return ((h & HAND_FU_MASK) >> HAND_FU_SHIFT);}
-	inline uint32_t getKY() const {return ((h & HAND_KY_MASK) >> HAND_KY_SHIFT);}
-	inline uint32_t getKE() const {return ((h & HAND_KE_MASK) >> HAND_KE_SHIFT);}
-	inline uint32_t getGI() const {return ((h & HAND_GI_MASK) >> HAND_GI_SHIFT);}
-	inline uint32_t getKI() const {return ((h & HAND_KI_MASK) >> HAND_KI_SHIFT);}
-	inline uint32_t getKA() const {return ((h & HAND_KA_MASK) >> HAND_KA_SHIFT);}
-	inline uint32_t getHI() const {return ((h & HAND_HI_MASK) >> HAND_HI_SHIFT);}
-	// ‹î‚ğ‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©(‘¶İ‚ğŠm”F‚·‚é‚¾‚¯‚È‚çƒVƒtƒg‰‰Z‚Í•s—v)
-	inline uint32_t existFU() const {return (h & HAND_FU_MASK);}
-	inline uint32_t existKY() const {return (h & HAND_KY_MASK);}
-	inline uint32_t existKE() const {return (h & HAND_KE_MASK);}
-	inline uint32_t existGI() const {return (h & HAND_GI_MASK);}
-	inline uint32_t existKI() const {return (h & HAND_KI_MASK);}
-	inline uint32_t existKA() const {return (h & HAND_KA_MASK);}
-	inline uint32_t existHI() const {return (h & HAND_HI_MASK);}
-	inline int exist(int kind) const {kind &= ~GOTE; if (IS_DOM_HAND(h, tbl[kind])) return 1; return 0;}
-	inline void set(const int hand[]) {
-		h = uint32_t((hand[HI] << HAND_HI_SHIFT) + (hand[KA] << HAND_KA_SHIFT)
-		  + (hand[KI] << HAND_KI_SHIFT) + (hand[GI] << HAND_GI_SHIFT)
-		  + (hand[KE] << HAND_KE_SHIFT) + (hand[KY] << HAND_KY_SHIFT)
-		  + (hand[FU] << HAND_FU_SHIFT));
+#define HAND_FU_MASK (0x1Fu << HAND_FU_SHIFT)
+#define HAND_KY_MASK (0x07u << HAND_KY_SHIFT)
+#define HAND_KE_MASK (0x07u << HAND_KE_SHIFT)
+#define HAND_GI_MASK (0x07u << HAND_GI_SHIFT)
+#define HAND_KI_MASK (0x07u << HAND_KI_SHIFT)
+#define HAND_KA_MASK (0x03u << HAND_KA_SHIFT)
+#define HAND_HI_MASK (0x03u << HAND_HI_SHIFT)
+#define HAND_FU_INC (0x01u << HAND_FU_SHIFT)
+#define HAND_KY_INC (0x01u << HAND_KY_SHIFT)
+#define HAND_KE_INC (0x01u << HAND_KE_SHIFT)
+#define HAND_GI_INC (0x01u << HAND_GI_SHIFT)
+#define HAND_KI_INC (0x01u << HAND_KI_SHIFT)
+#define HAND_KA_INC (0x01u << HAND_KA_SHIFT)
+#define HAND_HI_INC (0x01u << HAND_HI_SHIFT)
+#define HAND_DOM_MASK (~(HAND_FU_MASK | HAND_KY_MASK | HAND_KE_MASK | HAND_GI_MASK | HAND_KI_MASK | HAND_KA_MASK | HAND_HI_MASK))
+#define IS_DOM_HAND(h1, h2) ((((h1) - (h2)) & HAND_DOM_MASK) == 0)
+	// ï¿½eï¿½ï¿½Ì–ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½æ“¾ï¿½ï¿½ï¿½ï¿½
+	inline uint32_t getFU() const { return ((h & HAND_FU_MASK) >> HAND_FU_SHIFT); }
+	inline uint32_t getKY() const { return ((h & HAND_KY_MASK) >> HAND_KY_SHIFT); }
+	inline uint32_t getKE() const { return ((h & HAND_KE_MASK) >> HAND_KE_SHIFT); }
+	inline uint32_t getGI() const { return ((h & HAND_GI_MASK) >> HAND_GI_SHIFT); }
+	inline uint32_t getKI() const { return ((h & HAND_KI_MASK) >> HAND_KI_SHIFT); }
+	inline uint32_t getKA() const { return ((h & HAND_KA_MASK) >> HAND_KA_SHIFT); }
+	inline uint32_t getHI() const { return ((h & HAND_HI_MASK) >> HAND_HI_SHIFT); }
+	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½é‚©ï¿½Ç‚ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½İ‚ï¿½ï¿½mï¿½Fï¿½ï¿½ï¿½é‚¾ï¿½ï¿½ï¿½È‚ï¿½Vï¿½tï¿½gï¿½ï¿½ï¿½Zï¿½Í•sï¿½v)
+	inline uint32_t existFU() const { return (h & HAND_FU_MASK); }
+	inline uint32_t existKY() const { return (h & HAND_KY_MASK); }
+	inline uint32_t existKE() const { return (h & HAND_KE_MASK); }
+	inline uint32_t existGI() const { return (h & HAND_GI_MASK); }
+	inline uint32_t existKI() const { return (h & HAND_KI_MASK); }
+	inline uint32_t existKA() const { return (h & HAND_KA_MASK); }
+	inline uint32_t existHI() const { return (h & HAND_HI_MASK); }
+	inline int exist(int kind) const
+	{
+		kind &= ~GOTE;
+		if (IS_DOM_HAND(h, tbl[kind]))
+			return 1;
+		return 0;
 	}
-	inline void inc(const int kind) {h += tbl[kind];}
-	inline void dec(const int kind) {h -= tbl[kind];}
-	Hand& operator = (uint32_t a) {h = a; return *this;}
-	bool Empty() const {return h == 0;}
+	inline void set(const int hand[])
+	{
+		h = uint32_t((hand[HI] << HAND_HI_SHIFT) + (hand[KA] << HAND_KA_SHIFT) + (hand[KI] << HAND_KI_SHIFT) + (hand[GI] << HAND_GI_SHIFT) + (hand[KE] << HAND_KE_SHIFT) + (hand[KY] << HAND_KY_SHIFT) + (hand[FU] << HAND_FU_SHIFT));
+	}
+	inline void inc(const int kind) { h += tbl[kind]; }
+	inline void dec(const int kind) { h -= tbl[kind]; }
+	Hand &operator=(uint32_t a)
+	{
+		h = a;
+		return *this;
+	}
+	bool Empty() const { return h == 0; }
 };
 
 #else
 enum PieceType {
 	PIECE_TYPE_NONE = 0,
-	PAWN = 1, KNIGHT = 2, BISHOP = 3, ROOK = 4, QUEEN = 5, KING = 6
+	PAWN = 1,
+	KNIGHT = 2,
+	BISHOP = 3,
+	ROOK = 4,
+	QUEEN = 5,
+	KING = 6
 };
 
 enum Piece {
-	PIECE_NONE_DARK_SQ = 0, WP = 1, WN = 2, WB = 3, WR = 4, WQ = 5, WK = 6,
-	BP = 9, BN = 10, BB = 11, BR = 12, BQ = 13, BK = 14, PIECE_NONE = 16
+	PIECE_NONE_DARK_SQ = 0,
+	WP = 1,
+	WN = 2,
+	WB = 3,
+	WR = 4,
+	WQ = 5,
+	WK = 6,
+	BP = 9,
+	BN = 10,
+	BB = 11,
+	BR = 12,
+	BQ = 13,
+	BK = 14,
+	PIECE_NONE = 16
 };
 
 enum Color {
-	WHITE, BLACK, COLOR_NONE
+	WHITE,
+	BLACK,
+	COLOR_NONE
 };
 #endif
 
@@ -472,9 +506,9 @@ enum Depth {
 
 	ONE_PLY = 2,
 
-	DEPTH_ZERO          =  0 * ONE_PLY,
-	DEPTH_QS_CHECKS     = -1 * ONE_PLY,
-	DEPTH_QS_NO_CHECKS  = -2 * ONE_PLY,
+	DEPTH_ZERO = 0 * ONE_PLY,
+	DEPTH_QS_CHECKS = -1 * ONE_PLY,
+	DEPTH_QS_NO_CHECKS = -2 * ONE_PLY,
 	DEPTH_QS_RECAPTURES = -4 * ONE_PLY,
 
 	DEPTH_NONE = -127 * ONE_PLY
@@ -482,31 +516,159 @@ enum Depth {
 
 #if defined(NANOHA)
 enum Square {
-	SQ_A1 = 0x11, SQ_A2, SQ_A3, SQ_A4, SQ_A5, SQ_A6, SQ_A7, SQ_A8, SQ_A9,
-	SQ_B1 = 0x21, SQ_B2, SQ_B3, SQ_B4, SQ_B5, SQ_B6, SQ_B7, SQ_B8, SQ_B9,
-	SQ_C1 = 0x31, SQ_C2, SQ_C3, SQ_C4, SQ_C5, SQ_C6, SQ_C7, SQ_C8, SQ_C9,
-	SQ_D1 = 0x41, SQ_D2, SQ_D3, SQ_D4, SQ_D5, SQ_D6, SQ_D7, SQ_D8, SQ_D9,
-	SQ_E1 = 0x51, SQ_E2, SQ_E3, SQ_E4, SQ_E5, SQ_E6, SQ_E7, SQ_E8, SQ_E9,
-	SQ_F1 = 0x61, SQ_F2, SQ_F3, SQ_F4, SQ_F5, SQ_F6, SQ_F7, SQ_F8, SQ_F9,
-	SQ_G1 = 0x71, SQ_G2, SQ_G3, SQ_G4, SQ_G5, SQ_G6, SQ_G7, SQ_G8, SQ_G9,
-	SQ_H1 = 0x81, SQ_H2, SQ_H3, SQ_H4, SQ_H5, SQ_H6, SQ_H7, SQ_H8, SQ_H9,
-	SQ_I1 = 0x91, SQ_I2, SQ_I3, SQ_I4, SQ_I5, SQ_I6, SQ_I7, SQ_I8, SQ_I9,
+	SQ_A1 = 0x11,
+	SQ_A2,
+	SQ_A3,
+	SQ_A4,
+	SQ_A5,
+	SQ_A6,
+	SQ_A7,
+	SQ_A8,
+	SQ_A9,
+	SQ_B1 = 0x21,
+	SQ_B2,
+	SQ_B3,
+	SQ_B4,
+	SQ_B5,
+	SQ_B6,
+	SQ_B7,
+	SQ_B8,
+	SQ_B9,
+	SQ_C1 = 0x31,
+	SQ_C2,
+	SQ_C3,
+	SQ_C4,
+	SQ_C5,
+	SQ_C6,
+	SQ_C7,
+	SQ_C8,
+	SQ_C9,
+	SQ_D1 = 0x41,
+	SQ_D2,
+	SQ_D3,
+	SQ_D4,
+	SQ_D5,
+	SQ_D6,
+	SQ_D7,
+	SQ_D8,
+	SQ_D9,
+	SQ_E1 = 0x51,
+	SQ_E2,
+	SQ_E3,
+	SQ_E4,
+	SQ_E5,
+	SQ_E6,
+	SQ_E7,
+	SQ_E8,
+	SQ_E9,
+	SQ_F1 = 0x61,
+	SQ_F2,
+	SQ_F3,
+	SQ_F4,
+	SQ_F5,
+	SQ_F6,
+	SQ_F7,
+	SQ_F8,
+	SQ_F9,
+	SQ_G1 = 0x71,
+	SQ_G2,
+	SQ_G3,
+	SQ_G4,
+	SQ_G5,
+	SQ_G6,
+	SQ_G7,
+	SQ_G8,
+	SQ_G9,
+	SQ_H1 = 0x81,
+	SQ_H2,
+	SQ_H3,
+	SQ_H4,
+	SQ_H5,
+	SQ_H6,
+	SQ_H7,
+	SQ_H8,
+	SQ_H9,
+	SQ_I1 = 0x91,
+	SQ_I2,
+	SQ_I3,
+	SQ_I4,
+	SQ_I5,
+	SQ_I6,
+	SQ_I7,
+	SQ_I8,
+	SQ_I9,
 	SQ_NONE
 };
 #else
 enum Square {
-	SQ_A1, SQ_B1, SQ_C1, SQ_D1, SQ_E1, SQ_F1, SQ_G1, SQ_H1,
-	SQ_A2, SQ_B2, SQ_C2, SQ_D2, SQ_E2, SQ_F2, SQ_G2, SQ_H2,
-	SQ_A3, SQ_B3, SQ_C3, SQ_D3, SQ_E3, SQ_F3, SQ_G3, SQ_H3,
-	SQ_A4, SQ_B4, SQ_C4, SQ_D4, SQ_E4, SQ_F4, SQ_G4, SQ_H4,
-	SQ_A5, SQ_B5, SQ_C5, SQ_D5, SQ_E5, SQ_F5, SQ_G5, SQ_H5,
-	SQ_A6, SQ_B6, SQ_C6, SQ_D6, SQ_E6, SQ_F6, SQ_G6, SQ_H6,
-	SQ_A7, SQ_B7, SQ_C7, SQ_D7, SQ_E7, SQ_F7, SQ_G7, SQ_H7,
-	SQ_A8, SQ_B8, SQ_C8, SQ_D8, SQ_E8, SQ_F8, SQ_G8, SQ_H8,
+	SQ_A1,
+	SQ_B1,
+	SQ_C1,
+	SQ_D1,
+	SQ_E1,
+	SQ_F1,
+	SQ_G1,
+	SQ_H1,
+	SQ_A2,
+	SQ_B2,
+	SQ_C2,
+	SQ_D2,
+	SQ_E2,
+	SQ_F2,
+	SQ_G2,
+	SQ_H2,
+	SQ_A3,
+	SQ_B3,
+	SQ_C3,
+	SQ_D3,
+	SQ_E3,
+	SQ_F3,
+	SQ_G3,
+	SQ_H3,
+	SQ_A4,
+	SQ_B4,
+	SQ_C4,
+	SQ_D4,
+	SQ_E4,
+	SQ_F4,
+	SQ_G4,
+	SQ_H4,
+	SQ_A5,
+	SQ_B5,
+	SQ_C5,
+	SQ_D5,
+	SQ_E5,
+	SQ_F5,
+	SQ_G5,
+	SQ_H5,
+	SQ_A6,
+	SQ_B6,
+	SQ_C6,
+	SQ_D6,
+	SQ_E6,
+	SQ_F6,
+	SQ_G6,
+	SQ_H6,
+	SQ_A7,
+	SQ_B7,
+	SQ_C7,
+	SQ_D7,
+	SQ_E7,
+	SQ_F7,
+	SQ_G7,
+	SQ_H7,
+	SQ_A8,
+	SQ_B8,
+	SQ_C8,
+	SQ_D8,
+	SQ_E8,
+	SQ_F8,
+	SQ_G8,
+	SQ_H8,
 	SQ_NONE,
 
-	DELTA_N =  8,
-	DELTA_E =  1,
+	DELTA_N = 8,
+	DELTA_E = 1,
 	DELTA_S = -8,
 	DELTA_W = -1,
 
@@ -521,41 +683,74 @@ enum Square {
 
 enum File {
 #if defined(NANOHA)
-	FILE_0, FILE_1, FILE_2, FILE_3, FILE_4, FILE_5, FILE_6, FILE_7, FILE_8, FILE_9
+	FILE_0,
+	FILE_1,
+	FILE_2,
+	FILE_3,
+	FILE_4,
+	FILE_5,
+	FILE_6,
+	FILE_7,
+	FILE_8,
+	FILE_9
 #else
-	FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H
+	FILE_A,
+	FILE_B,
+	FILE_C,
+	FILE_D,
+	FILE_E,
+	FILE_F,
+	FILE_G,
+	FILE_H
 #endif
 };
 
 enum Rank {
 #if defined(NANOHA)
-	RANK_0, RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8, RANK_9
+	RANK_0,
+	RANK_1,
+	RANK_2,
+	RANK_3,
+	RANK_4,
+	RANK_5,
+	RANK_6,
+	RANK_7,
+	RANK_8,
+	RANK_9
 #else
-	RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8
+	RANK_1,
+	RANK_2,
+	RANK_3,
+	RANK_4,
+	RANK_5,
+	RANK_6,
+	RANK_7,
+	RANK_8
 #endif
 };
 
 #if !defined(NANOHA)
 enum SquareColor {
-	DARK, LIGHT
+	DARK,
+	LIGHT
 };
 #endif
 
 enum ScaleFactor {
-	SCALE_FACTOR_ZERO   = 0,
+	SCALE_FACTOR_ZERO = 0,
 	SCALE_FACTOR_NORMAL = 64,
-	SCALE_FACTOR_MAX    = 128,
-	SCALE_FACTOR_NONE   = 255
+	SCALE_FACTOR_MAX = 128,
+	SCALE_FACTOR_NONE = 255
 };
 
 #if !defined(NANOHA)
 enum CastleRight {
 	CASTLES_NONE = 0,
-	WHITE_OO     = 1,
-	BLACK_OO     = 2,
-	WHITE_OOO    = 4,
-	BLACK_OOO    = 8,
-	ALL_CASTLES  = 15
+	WHITE_OO = 1,
+	BLACK_OO = 2,
+	WHITE_OOO = 4,
+	BLACK_OOO = 8,
+	ALL_CASTLES = 15
 };
 #endif
 
@@ -570,19 +765,27 @@ enum Score {
 	SCORE_ENSURE_INTEGER_SIZE_N = INT_MIN
 };
 
-#define ENABLE_OPERATORS_ON(T) \
-inline T operator+ (const T d1, const T d2) { return T(int(d1) + int(d2)); } \
-inline T operator- (const T d1, const T d2) { return T(int(d1) - int(d2)); } \
-inline T operator* (int i, const T d) {  return T(i * int(d)); } \
-inline T operator* (const T d, int i) {  return T(int(d) * i); } \
-inline T operator/ (const T d, int i) { return T(int(d) / i); } \
-inline T operator- (const T d) { return T(-int(d)); } \
-inline T operator++ (T& d, int) {d = T(int(d) + 1); return d; } \
-inline T operator-- (T& d, int) { d = T(int(d) - 1); return d; } \
-inline void operator+= (T& d1, const T d2) { d1 = d1 + d2; } \
-inline void operator-= (T& d1, const T d2) { d1 = d1 - d2; } \
-inline void operator*= (T& d, int i) { d = T(int(d) * i); } \
-inline void operator/= (T& d, int i) { d = T(int(d) / i); }
+#define ENABLE_OPERATORS_ON(T)                                                  \
+	inline T operator+(const T d1, const T d2) { return T(int(d1) + int(d2)); } \
+	inline T operator-(const T d1, const T d2) { return T(int(d1) - int(d2)); } \
+	inline T operator*(int i, const T d) { return T(i * int(d)); }              \
+	inline T operator*(const T d, int i) { return T(int(d) * i); }              \
+	inline T operator/(const T d, int i) { return T(int(d) / i); }              \
+	inline T operator-(const T d) { return T(-int(d)); }                        \
+	inline T operator++(T &d, int)                                              \
+	{                                                                           \
+		d = T(int(d) + 1);                                                      \
+		return d;                                                               \
+	}                                                                           \
+	inline T operator--(T &d, int)                                              \
+	{                                                                           \
+		d = T(int(d) - 1);                                                      \
+		return d;                                                               \
+	}                                                                           \
+	inline void operator+=(T &d1, const T d2) { d1 = d1 + d2; }                 \
+	inline void operator-=(T &d1, const T d2) { d1 = d1 - d2; }                 \
+	inline void operator*=(T &d, int i) { d = T(int(d) * i); }                  \
+	inline void operator/=(T &d, int i) { d = T(int(d) / i); }
 
 ENABLE_OPERATORS_ON(Value)
 ENABLE_OPERATORS_ON(PieceType)
@@ -596,8 +799,8 @@ ENABLE_OPERATORS_ON(Rank)
 #undef ENABLE_OPERATORS_ON
 
 // Extra operators for adding integers to a Value
-inline Value operator+ (Value v, int i) { return Value(int(v) + i); }
-inline Value operator- (Value v, int i) { return Value(int(v) - i); }
+inline Value operator+(Value v, int i) { return Value(int(v) + i); }
+inline Value operator-(Value v, int i) { return Value(int(v) - i); }
 
 // Extracting the _signed_ lower and upper 16 bits it not so trivial
 // because according to the standard a simple cast to short is
@@ -607,12 +810,21 @@ inline Value mg_value(Score s) { return Value(((s + 32768) & ~0xffff) / 0x10000)
 // Unfortunatly on Intel 64 bit we have a small speed regression, so use a faster code in
 // this case, although not 100% standard compliant it seems to work for Intel and MSVC.
 #if defined(IS_64BIT) && (!defined(__GNUC__) || defined(__INTEL_COMPILER))
-inline Value eg_value(Score s) { return Value(int16_t(s & 0xffff)); }
+inline Value eg_value(Score s)
+{
+	return Value(int16_t(s & 0xffff));
+}
 #else
-inline Value eg_value(Score s) { return Value((int)(unsigned(s) & 0x7fffu) - (int)(unsigned(s) & 0x8000u)); }
+inline Value eg_value(Score s)
+{
+	return Value((int)(unsigned(s) & 0x7fffu) - (int)(unsigned(s) & 0x8000u));
+}
 #endif
 
-inline Score make_score(int mg, int eg) { return Score((mg << 16) + eg); }
+inline Score make_score(int mg, int eg)
+{
+	return Score((mg << 16) + eg);
+}
 
 // Division must be handled separately for each term
 inline Score operator/(Score s, int i) { return make_score(mg_value(s) / i, eg_value(s) / i); }
@@ -622,56 +834,61 @@ inline Score operator/(Score s, int i) { return make_score(mg_value(s) / i, eg_v
 inline Score operator*(Score s1, Score s2);
 
 // Remaining Score operators are standard
-inline Score operator+ (const Score d1, const Score d2) { return Score(int(d1) + int(d2)); }
-inline Score operator- (const Score d1, const Score d2) { return Score(int(d1) - int(d2)); }
-inline Score operator* (int i, const Score d) {  return Score(i * int(d)); }
-inline Score operator* (const Score d, int i) {  return Score(int(d) * i); }
-inline Score operator- (const Score d) { return Score(-int(d)); }
-inline void operator+= (Score& d1, const Score d2) { d1 = d1 + d2; }
-inline void operator-= (Score& d1, const Score d2) { d1 = d1 - d2; }
-inline void operator*= (Score& d, int i) { d = Score(int(d) * i); }
-inline void operator/= (Score& d, int i) { d = Score(int(d) / i); }
+inline Score operator+(const Score d1, const Score d2) { return Score(int(d1) + int(d2)); }
+inline Score operator-(const Score d1, const Score d2) { return Score(int(d1) - int(d2)); }
+inline Score operator*(int i, const Score d) { return Score(i * int(d)); }
+inline Score operator*(const Score d, int i) { return Score(int(d) * i); }
+inline Score operator-(const Score d) { return Score(-int(d)); }
+inline void operator+=(Score &d1, const Score d2) { d1 = d1 + d2; }
+inline void operator-=(Score &d1, const Score d2) { d1 = d1 - d2; }
+inline void operator*=(Score &d, int i) { d = Score(int(d) * i); }
+inline void operator/=(Score &d, int i) { d = Score(int(d) / i); }
 
 #if defined(NANOHA)
-const Value PawnValueMidgame   = Value(87+87);
+const Value PawnValueMidgame = Value(87 + 87);
 
 extern const Value PieceValueMidgame[32];
 extern const Value PieceValueEndgame[32];
 
 #else
-const Value PawnValueMidgame   = Value(0x0C6);
-const Value PawnValueEndgame   = Value(0x102);
+const Value PawnValueMidgame = Value(0x0C6);
+const Value PawnValueEndgame = Value(0x102);
 const Value KnightValueMidgame = Value(0x331);
 const Value KnightValueEndgame = Value(0x34E);
 const Value BishopValueMidgame = Value(0x344);
 const Value BishopValueEndgame = Value(0x359);
-const Value RookValueMidgame   = Value(0x4F6);
-const Value RookValueEndgame   = Value(0x4FE);
-const Value QueenValueMidgame  = Value(0x9D9);
-const Value QueenValueEndgame  = Value(0x9FE);
+const Value RookValueMidgame = Value(0x4F6);
+const Value RookValueEndgame = Value(0x4FE);
+const Value QueenValueMidgame = Value(0x9D9);
+const Value QueenValueEndgame = Value(0x9FE);
 
 extern const Value PieceValueMidgame[17];
 extern const Value PieceValueEndgame[17];
 extern int SquareDistance[64][64];
 #endif
 
-inline Value piece_value_midgame(Piece p) {
+inline Value piece_value_midgame(Piece p)
+{
 	return PieceValueMidgame[p];
 }
 
-inline Value piece_value_endgame(Piece p) {
+inline Value piece_value_endgame(Piece p)
+{
 	return PieceValueEndgame[p];
 }
 
-inline Value value_mate_in(int ply) {
+inline Value value_mate_in(int ply)
+{
 	return VALUE_MATE - ply;
 }
 
-inline Value value_mated_in(int ply) {
+inline Value value_mated_in(int ply)
+{
 	return -VALUE_MATE + ply;
 }
 
-inline Piece make_piece(Color c, PieceType pt) {
+inline Piece make_piece(Color c, PieceType pt)
+{
 #if defined(NANOHA)
 	return (c == BLACK) ? Piece(int(pt)) : Piece(GOTE | int(pt));
 #else
@@ -679,7 +896,8 @@ inline Piece make_piece(Color c, PieceType pt) {
 #endif
 }
 
-inline PieceType type_of(Piece p)  {
+inline PieceType type_of(Piece p)
+{
 #if defined(NANOHA)
 	return PieceType(int(p) & 0x0F);
 #else
@@ -687,7 +905,8 @@ inline PieceType type_of(Piece p)  {
 #endif
 }
 
-inline Color color_of(Piece p) {
+inline Color color_of(Piece p)
+{
 #if defined(NANOHA)
 	return (int(p) & GOTE) ? WHITE : BLACK;
 #else
@@ -695,11 +914,13 @@ inline Color color_of(Piece p) {
 #endif
 }
 
-inline Color flip(Color c) {
+inline Color flip(Color c)
+{
 	return Color(c ^ 1);
 }
 
-inline Square make_square(File f, Rank r) {
+inline Square make_square(File f, Rank r)
+{
 #if defined(NANOHA)
 	return Square((int(f) << 4) | int(r));
 #else
@@ -707,7 +928,8 @@ inline Square make_square(File f, Rank r) {
 #endif
 }
 
-inline bool square_is_ok(Square s) {
+inline bool square_is_ok(Square s)
+{
 #if defined(NANOHA)
 	return s >= SQ_A1 && s <= SQ_I9;
 #else
@@ -715,7 +937,8 @@ inline bool square_is_ok(Square s) {
 #endif
 }
 
-inline File file_of(Square s) {
+inline File file_of(Square s)
+{
 #if defined(NANOHA)
 	return File(int(s) >> 4);
 #else
@@ -723,7 +946,8 @@ inline File file_of(Square s) {
 #endif
 }
 
-inline Rank rank_of(Square s) {
+inline Rank rank_of(Square s)
+{
 #if defined(NANOHA)
 	return Rank(int(s) & 0x0F);
 #else
@@ -731,7 +955,8 @@ inline Rank rank_of(Square s) {
 #endif
 }
 
-inline Square flip(Square s) {
+inline Square flip(Square s)
+{
 #if defined(NANOHA)
 	return Square(0xAA - int(s));
 #else
@@ -739,7 +964,8 @@ inline Square flip(Square s) {
 #endif
 }
 
-inline Square mirror(Square s) {
+inline Square mirror(Square s)
+{
 #if defined(NANOHA)
 	int s2 = int(s);
 	int f = s2 & 0x0F;
@@ -751,50 +977,59 @@ inline Square mirror(Square s) {
 }
 
 #ifndef NANOHA
-inline Square relative_square(Color c, Square s) {
+inline Square relative_square(Color c, Square s)
+{
 	return Square(s ^ (c * 56));
 }
 
-inline Rank relative_rank(Color c, Rank r) {
+inline Rank relative_rank(Color c, Rank r)
+{
 	return Rank(r ^ (c * 7));
 }
 
-inline Rank relative_rank(Color c, Square s) {
+inline Rank relative_rank(Color c, Square s)
+{
 	return relative_rank(c, rank_of(s));
 }
 #endif
 
 #if !defined(NANOHA)
-inline SquareColor color_of(Square s) {
+inline SquareColor color_of(Square s)
+{
 	return SquareColor(int(rank_of(s) + s) & 1);
 }
 
-inline bool opposite_colors(Square s1, Square s2) {
+inline bool opposite_colors(Square s1, Square s2)
+{
 	int s = s1 ^ s2;
 	return ((s >> 3) ^ s) & 1;
 }
 
-inline int file_distance(Square s1, Square s2) {
+inline int file_distance(Square s1, Square s2)
+{
 	return abs(file_of(s1) - file_of(s2));
 }
 
-inline int rank_distance(Square s1, Square s2) {
+inline int rank_distance(Square s1, Square s2)
+{
 	return abs(rank_of(s1) - rank_of(s2));
 }
 
-inline int square_distance(Square s1, Square s2) {
+inline int square_distance(Square s1, Square s2)
+{
 	return SquareDistance[s1][s2];
 }
 #endif
 
 #if !defined(NANOHA)
-inline char piece_type_to_char(PieceType pt) {
+inline char piece_type_to_char(PieceType pt)
+{
 	return " PNBRQK"[pt];
 }
 #endif
 
-
-inline char file_to_char(File f) {
+inline char file_to_char(File f)
+{
 #if defined(NANOHA)
 	return char(f - FILE_1 + int('a'));
 #else
@@ -802,37 +1037,42 @@ inline char file_to_char(File f) {
 #endif
 }
 
-inline char rank_to_char(Rank r) {
+inline char rank_to_char(Rank r)
+{
 	return char(r - RANK_1 + int('1'));
 }
 
-inline const std::string square_to_string(Square s) {
-	char ch[] = { file_to_char(file_of(s)), rank_to_char(rank_of(s)), 0 };
+inline const std::string square_to_string(Square s)
+{
+	char ch[] = {file_to_char(file_of(s)), rank_to_char(rank_of(s)), 0};
 	return ch;
 }
 
 #ifndef NANOHA
-inline Square pawn_push(Color c) {
+inline Square pawn_push(Color c)
+{
 	return c == WHITE ? DELTA_N : DELTA_S;
 }
 #endif
 
 #if defined(NANOHA)
 
-#define MAX_CHECKS		128		// ‰¤è‚ÌÅ‘å”
-#define MAX_EVASION		128		// ‰¤è‰ñ”ğ‚ÌÅ‘å”
+#define MAX_CHECKS 128  // ï¿½ï¿½ï¿½ï¿½ÌÅ‘å”
+#define MAX_EVASION 128 // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÌÅ‘å”
 
-namespace NanohaTbl {
-	extern const short z2sq[];
-	extern const int Direction[];
-	extern const int KomaValue[32];		// ‹î‚Ì‰¿’l
-	extern const int KomaValueEx[32];	// æ‚ç‚ê‚½‚Æ‚«(•ßŠl‚³‚ê‚½‚Æ‚«)‚Ì‰¿’l
-	extern const int KomaValuePro[32];	// ¬‚é‰¿’l
-	extern const int Piece2Index[32];	// ‹î‚Ìí—Ş‚É•ÏŠ·‚·‚é({‚ÆAˆÇAŒ\A‘S}‚ğ‹à‚Æ“¯ˆê‹)
+namespace NanohaTbl
+{
+extern const short z2sq[];
+extern const int Direction[];
+extern const int KomaValue[32];    // ï¿½ï¿½Ì‰ï¿½ï¿½l
+extern const int KomaValueEx[32];  // ï¿½ï¿½ï¿½ê‚½ï¿½Æ‚ï¿½(ï¿½ßŠlï¿½ï¿½ï¿½ê‚½ï¿½Æ‚ï¿½)ï¿½Ì‰ï¿½ï¿½l
+extern const int KomaValuePro[32]; // ï¿½ï¿½ï¿½é‰¿ï¿½l
+extern const int Piece2Index[32];  // ï¿½ï¿½Ìï¿½Ş‚É•ÏŠï¿½ï¿½ï¿½ï¿½ï¿½({ï¿½ÆAï¿½ÇAï¿½\ï¿½Aï¿½S}ï¿½ï¿½ï¿½ï¿½ï¿½Æ“ï¿½ï¿½ê‹)
 }
 
-// ‚È‚Ì‚Í‚ÌÀ•WŒn(0x11`0x99)‚ğ(0`80)‚Éˆ³k‚·‚é
-inline int conv_z2sq(int z){
+// ï¿½È‚Ì‚Í‚Ìï¿½ï¿½Wï¿½n(0x11ï¿½`0x99)ï¿½ï¿½(0ï¿½`80)ï¿½Éˆï¿½ï¿½kï¿½ï¿½ï¿½ï¿½
+inline int conv_z2sq(int z)
+{
 	return NanohaTbl::z2sq[z];
 }
 inline int conv_sq2z(int sq)
@@ -840,63 +1080,69 @@ inline int conv_sq2z(int sq)
 	int x, y;
 	y = sq / 9;
 	x = sq % 9;
-	return (x+1)*0x10+(y+1);
+	return (x + 1) * 0x10 + (y + 1);
 }
 
 #if defined(_MSC_VER)
 
 #elif defined(__GNUC__)
-inline unsigned char _BitScanForward(unsigned long * Index, unsigned long Mask)
+#if !defined(WIN32)
+inline unsigned char _BitScanForward(unsigned long *Index, unsigned long Mask)
 {
-	if (Mask == 0) return 0;
+	if (Mask == 0)
+		return 0;
 	*Index = static_cast<unsigned long>(__builtin_ctz(Mask));
 	return 1;
 }
+#endif
 
-#define __assume(x)		// MS ‚ÌƒRƒ“ƒpƒCƒ‰‚ÌƒR[ƒh¶¬‚Ìƒqƒ“ƒg‚¾‚ªAgcc‚Å‚Í–³Œø‚È‚½‚ß
+#define __assume(x) // MS ï¿½ÌƒRï¿½ï¿½ï¿½pï¿½Cï¿½ï¿½ï¿½ÌƒRï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½Ìƒqï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½Agccï¿½Å‚Í–ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½
 
-#endif	// defined(__GNUC__)
+#endif // defined(__GNUC__)
 
 inline unsigned int PopCnt32(unsigned int value)
 {
 	unsigned int bits = 0;
-	while (value) {value &= value-1; bits++;}
+	while (value) {
+		value &= value - 1;
+		bits++;
+	}
 	return bits;
 }
 
-// o—ÍŒn
-int output_info(const char *fmt, ...);		// î•ño—Í(printf()‘ã‚í‚è)
-int foutput_log(FILE *fp, const char *fmt, ...);		// î•ño—Í(printf()‘ã‚í‚è)
-//int output_debug(const char *fmt, ...);		// for ƒfƒoƒbƒO
+// ï¿½oï¿½ÍŒn
+int output_info(const char *fmt, ...);           // ï¿½ï¿½ï¿½oï¿½ï¿½(printf()ï¿½ï¿½ï¿½ï¿½)
+int foutput_log(FILE *fp, const char *fmt, ...); // ï¿½ï¿½ï¿½oï¿½ï¿½(printf()ï¿½ï¿½ï¿½ï¿½)
+// int output_debug(const char *fmt, ...);		// for ï¿½fï¿½oï¿½bï¿½O
 
-#define ENABLE_MYASSERT			// MYASSERT()‚ğ—LŒø‚É‚·‚é
+#define ENABLE_MYASSERT // MYASSERT()ï¿½ï¿½Lï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½
 #if defined(ENABLE_MYASSERT)
 extern int debug_level;
-// x ‚ª^‚Ì‚Æ‚«‚É‰½‚à‚µ‚È‚¢
-// *static_cast<int*>(0)=0‚Åƒƒ‚ƒŠ•ÛŒì—áŠO‚ª”­¶‚µA‚½‚¾‚¿‚É~‚Ü‚é‚½‚ßƒfƒoƒbƒO‚µ‚â‚·‚¢.
-#define MYASSERT(x)	\
-			do {		\
-				if (!(x)) {	\
-					fprintf(stderr, "Assert:%s:%d:[%s]\n", __FILE__, __LINE__, #x);	\
-					*static_cast<int*>(0)=0;	\
-				}	\
-			} while(0)
-#define MYABORT()	\
-			do {		\
-				fprintf(stderr, "Abort:%s:%d\n", __FILE__, __LINE__);	\
-				*static_cast<int*>(0)=0;	\
-			} while(0)
-#define SET_DEBUG(x)	debug_level=(x)
-#define DEBUG_LEVEL		debug_level
+// x ï¿½ï¿½ï¿½^ï¿½Ì‚Æ‚ï¿½ï¿½É‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½
+// *static_cast<int*>(0)=0ï¿½Åƒï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÛŒï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É~ï¿½Ü‚é‚½ï¿½ßƒfï¿½oï¿½bï¿½Oï¿½ï¿½ï¿½â‚·ï¿½ï¿½.
+#define MYASSERT(x)                                                         \
+	do {                                                                    \
+		if (!(x)) {                                                         \
+			fprintf(stderr, "Assert:%s:%d:[%s]\n", __FILE__, __LINE__, #x); \
+			*static_cast<int *>(0) = 0;                                     \
+		}                                                                   \
+	} while (0)
+#define MYABORT()                                             \
+	do {                                                      \
+		fprintf(stderr, "Abort:%s:%d\n", __FILE__, __LINE__); \
+		*static_cast<int *>(0) = 0;                           \
+	} while (0)
+#define SET_DEBUG(x) debug_level = (x)
+#define DEBUG_LEVEL debug_level
 #else
-#define MYASSERT(x)	
-#define MYABORT()	
+#define MYASSERT(x)
+#define MYABORT()
 #define SET_DEBUG(x)
-#define DEBUG_LEVEL		0
+#define DEBUG_LEVEL 0
 #endif
 
 #if defined(CHK_PERFORM)
-#define COUNT_PERFORM(x)	((x)++)
+#define COUNT_PERFORM(x) ((x)++)
 #else
 #define COUNT_PERFORM(x)
 #endif // defined(CHK_PERFORM)

@@ -236,8 +236,8 @@ int input_available() {
 	// the input waiting in the pipe will be copied to the buffer,
 	// and the call to PeekNamedPipe can indicate no input available.
 	// Setting stdin to unbuffered was not enough. [from Greko]
-	if (stdin->_cnt > 0)
-		return 1;
+///	if (stdin->_cnt > 0)
+///		return 1;
 
 	// When running under a GUI the input commands are sent to us
 	// directly over the internal pipe. If PeekNamedPipe() returns 0

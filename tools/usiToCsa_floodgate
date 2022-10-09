@@ -1,0 +1,13 @@
+#!/bin/bash
+
+#while true
+#do
+for i in {1..100} ; do
+  ./usiToCsa.rb --host wdoor.c.u-tokyo.ac.jp --floodgate --ponder --keep-alive=60 --options 
+  USI_Ponder=true,OwnBook=true,Ponder=true,Threads=4,Hash=256,ByoyomiMargin=800 ./nanohamini
+
+  if [ $? -ne 0 ] ; then
+    logger -s "$ID: Sleeping..."
+    sleep 900
+  fi
+done
